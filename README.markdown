@@ -13,12 +13,15 @@ add github to your sources if you haven't
 
 install required gems:
 
-    sudo gem oauth
+    sudo gem install oauth
     sudo gem install jnunemaker-happymapper
     sudo gem install jnunemaker-httparty
 
 Usage
 -----
 
+    require 'rubygems'
+    require 'qype'
+    
     qype = Qype::Client.new('your_api_key', 'your_api_secret')
     places = qype.search_places('sushi', 'Hamburg')
