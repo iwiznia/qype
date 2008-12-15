@@ -7,15 +7,11 @@ The official Ruby library for interacting with the Qype API.
 Installation
 ------------
 
-add github to your sources if you haven't
-
-    gem sources -a http://gems.github.com
-
 install required gems:
 
     sudo gem install oauth
-    sudo gem install jnunemaker-happymapper
-    sudo gem install jnunemaker-httparty
+    sudo gem install happymapper
+    sudo gem install httparty
 
 Usage
 -----
