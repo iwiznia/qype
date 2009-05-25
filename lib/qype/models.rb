@@ -61,17 +61,17 @@ module Qype
       throw :language_not_supported if link.nil?
 
       response = client.get(link.href)
-      Review.parse(response)
+      Review.parse(response.body)
     end
 
     def self.get(client, place_id)
       response = client.get("/places/#{place_id}")
-      parse(response, :single => true)
+      parse(response.body, :single => true)
     end
 
     def self.search(client, search_term, location_name)
       response = client.get('/places', :query => { :show => search_term, :in => location_name })
-      Place.parse(response)
+      Place.parse(response.body)
     end
 
     # options can be
@@ -81,7 +81,7 @@ module Qype
     #
     def self.nearby(client, latitude, longitude, options = {})
       response = client.get("/positions/#{latitude},#{longitude}/places", :query => options)
-      Place.parse(response)
+      Place.parse(response.body)
     end
 
   end
