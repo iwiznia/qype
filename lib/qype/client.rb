@@ -5,7 +5,7 @@ module Qype
     base_uri 'api.qype.com/v1'
 
     def initialize(api_key, api_secret, base_uri = nil)
-      Client.default_options[:oauth] = { :key => api_key, :secret => api_secret, :method => 'HMAC-SHA1' }
+      Client.default_options[:simple_oauth] = { :key => api_key, :secret => api_secret, :method => 'HMAC-SHA1' }
       Client.base_uri(base_uri) if base_uri
     end
 

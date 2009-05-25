@@ -4,35 +4,22 @@ require 'oauth/client/helper'
 module HTTParty
   class Request
     private
-      def oauth_header(request, oauth_config, token = nil, options = {})
-        consumer = OAuth::Consumer.new(oauth_config[:key], oauth_config[:secret])
-        options = { :request_uri => uri,
-                    :consumer => consumer,
-                    :token => token,
-                    :scheme => 'header',
-                    :signature_method => oauth_config[:method],
-                    :nonce => nil,
-                    :timestamp => nil }.merge(options)
+    def configure_simple_oauth
+      consumer = OAuth::Consumer.new(options[:simple_oauth][:key], options[:simple_oauth][:secret])
+      oauth_options = { :request_uri => uri,
+                        :consumer => consumer,
+                        :token => nil,
+                        :scheme => 'header',
+                        :signature_method => options[:simple_oauth][:method],
+                        :nonce => nil,
+                        :timestamp => nil }
+      @raw_request['authorization'] = OAuth::Client::Helper.new(@raw_request, oauth_options).header
+    end
 
-        OAuth::Client::Helper.new(request, options).header
-      end
-
-      def headers_including_oauth(request)
-        if options[:oauth]
-          { 'Authorization' => oauth_header(request, options[:oauth]) }.merge(options[:headers] || {})
-        else
-          options[:headers]
-        end
-      end
-
-      def get_response(uri) #:nodoc:
-        request = http_method.new(uri.request_uri)
-        request.body = options[:body].is_a?(Hash) ? options[:body].to_query : options[:body] unless options[:body].blank?
-        request.initialize_http_header headers_including_oauth(request)
-        request.basic_auth(options[:basic_auth][:username], options[:basic_auth][:password]) if options[:basic_auth]
-        response = http(uri).request(request)
-        options[:format] ||= format_from_mimetype(response['content-type'])
-        response
-      end
+    alias_method :setup_raw_request_without_oauth, :setup_raw_request
+    def setup_raw_request
+      setup_raw_request_without_oauth
+      configure_simple_oauth if options[:simple_oauth]
+    end
   end
 end
