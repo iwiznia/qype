@@ -46,6 +46,7 @@ module Qype
 
     tag 'place'
 
+    element :id, String
     element :title, String
     element :phone, String
     element :average_rating, Float
@@ -55,6 +56,10 @@ module Qype
     has_one :address, Address
     has_many :categories, Category
     has_many :links, Link
+    
+    def place_id
+      id.gsub!(/tag:api.qype.com,\d{4}-\d{2}-\d{2}:\/places\//,'')
+    end
 
     def reviews(client, language_code)
       link = self.links.find { |link| link.rel == 'http://schemas.qype.com/reviews' && link.hreflang == language_code }
