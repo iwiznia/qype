@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<echoe>, [">= 0"])
   end
 
-  s.add_dependency('rubygems',  [">=0"])
+  #s.add_dependency('rubygems',  [">=0"])
   s.add_dependency('httparty',  [">=0"])
   s.add_dependency('happymapper', [">=0"])
 end
