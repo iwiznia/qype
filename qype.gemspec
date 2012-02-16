@@ -32,4 +32,8 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<echoe>, [">= 0"])
   end
+
+  s.add_dependency('rubygems',  version)
+  s.add_dependency('httparty',  version)
+  s.add_dependency('happymapper',  version)
 end
