@@ -36,4 +36,6 @@ Gem::Specification.new do |s|
   #s.add_dependency('rubygems',  [">=0"])
   s.add_dependency('httparty',  [">=0"])
   s.add_dependency('happymapper', [">=0"])
+  s.add_dependency('oauth', [">=0"])
+
 end
