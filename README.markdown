@@ -19,5 +19,5 @@ Usage
     require 'rubygems'
     require 'qype'
     
-    qype = Qype::Client.new('your_api_key', 'your_api_secret')
+    qype = Qype::Client.new('your_api_key', 'your_api_secret', 'your_lang')
     places = qype.search_places('sushi', 'Hamburg')
