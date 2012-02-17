@@ -1,5 +1,5 @@
+#  qype = Qype::Client.new(Settings::Qype.credentials.key, Settings::Qype.credentials.secret, "es_ES")
 module Qype
-
   class Link
     include HappyMapper
 
@@ -18,6 +18,42 @@ module Qype
     tag 'category'
 
     element :title, String
+    element :full_title, String
+    element :id, String
+    element :updated, DateTime
+    element :created, DateTime
+    has_many :links, Link
+
+    attr_accessor :children
+
+    def real_id
+      id.gsub!(/tag:api.qype.com,\d{4}-\d{2}-\d{2}:\/places\/categories\//,'')
+    end
+
+    def get_children(client, deep = false)
+      return @children if @children
+      link = self.links.detect {|b| b.rel == "http://schemas.qype.com/place_categories.children"}
+      return @children =[] if !link
+
+      response = client.get(link.href)
+      @children = self.class.parse(response.body)
+      @children.each do |cat|
+        cat.get_children(client, deep)
+      end if deep
+      @children
+    end
+
+    def self.get_all(client, deep = false)
+      return @categories if @categories
+      response = client.get('/place_categories')
+      @categories = self.parse(response.body)
+      if deep
+        @categories.each do |cat|
+          cat.get_children(client, true)
+        end
+      end
+      @categories
+    end
   end
 
   class Image
@@ -56,7 +92,7 @@ module Qype
     has_one :address, Address
     has_many :categories, Category
     has_many :links, Link
-    
+
     def place_id
       id.gsub!(/tag:api.qype.com,\d{4}-\d{2}-\d{2}:\/places\//,'')
     end
@@ -81,7 +117,7 @@ module Qype
 
     # options can be
     #   :show => search_term            show places matching this search term
-    #   :in_category => category_id     only show places in a specific category 
+    #   :in_category => category_id     only show places in a specific category
     #   :order => order                 order results by: 'distance' (default), 'rating'
     #
     def self.nearby(client, latitude, longitude, options = {})
@@ -112,5 +148,4 @@ module Qype
     has_many :tags, Tag
     has_many :links, Link
   end
-
 end
