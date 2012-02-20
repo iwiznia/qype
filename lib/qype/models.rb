@@ -1,4 +1,3 @@
-#  qype = Qype::Client.new(Settings::Qype.credentials.key, Settings::Qype.credentials.secret, "es_ES")
 module Qype
   class Link
     include HappyMapper
@@ -30,26 +29,26 @@ module Qype
       id.gsub!(/tag:api.qype.com,\d{4}-\d{2}-\d{2}:\/places\/categories\//,'')
     end
 
-    def get_children(client, deep = false)
+    def get_children(deep = false)
       return @children if @children
       link = self.links.detect {|b| b.rel == "http://schemas.qype.com/place_categories.children"}
       return @children =[] if !link
 
-      response = client.get(link.href)
+      response = Client.get_client.get(link.href)
       @children = self.class.parse(response.body)
       @children.each do |cat|
-        cat.get_children(client, deep)
+        cat.get_children(Client.get_client, deep)
       end if deep
       @children
     end
 
-    def self.get_all(client, deep = false)
+    def get_all(deep = true)
       return @categories if @categories
-      response = client.get('/place_categories')
+      response = Client.get_client.get('/place_categories')
       @categories = self.parse(response.body)
       if deep
         @categories.each do |cat|
-          cat.get_children(client, true)
+          cat.get_children(Client.get_client, true)
         end
       end
       @categories
@@ -61,9 +60,23 @@ module Qype
 
     tag 'image'
 
-    attribute :small, String
-    attribute :medium, String
     attribute :large, String
+    attribute :medium, String
+    attribute :small, String
+    attribute :medium2x, String
+  end
+
+  class Asset
+    include HappyMapper
+
+    tag 'asset'
+
+    element :id, String
+    element :caption, String
+    element :created, DateTime
+
+    has_one :image, Image
+    has_many :links, Link
   end
 
   class Address
@@ -75,6 +88,7 @@ module Qype
     element :postcode, String
     element :housenumber, String
     element :city, String
+    element :country_code, String
   end
 
   class Place
@@ -87,32 +101,49 @@ module Qype
     element :phone, String
     element :average_rating, Float
     element :point, String
+    element :closed, Boolean
+    element :url, String
+    element :owner_description, String
+    element :explicit_content, Boolean
+    element :created, DateTime
+    element :updated, DateTime
 
-    has_one :image, Image
     has_one :address, Address
     has_many :categories, Category
     has_many :links, Link
 
-    def place_id
+    def real_id
       id.gsub!(/tag:api.qype.com,\d{4}-\d{2}-\d{2}:\/places\//,'')
     end
 
-    def reviews(client, language_code)
-      link = self.links.find { |link| link.rel == 'http://schemas.qype.com/reviews' && link.hreflang == language_code }
+    def reviews(language_code = nil)
+      @review ||= {}
+      lang = (language_code || Client.class.default_params[:lang].split("_").first)
+      return @review[lang] if @review[lang]
+      link = self.links.find { |link| link.rel == 'http://schemas.qype.com/reviews' && link.hreflang == lang }
       throw :language_not_supported if link.nil?
 
-      response = client.get(link.href)
-      Review.parse(response.body)
+      response = Client.get_client.get(link.href)
+      @review[lang] = Review.parse(response.body)
     end
 
-    def self.get(client, place_id)
-      response = client.get("/places/#{place_id}")
+    def assets
+      return @assets if @assets
+      link = self.links.find { |link| link.rel == 'http://schemas.qype.com/assets'}
+      throw :assets_not_found if link.nil?
+
+      response = Client.get_client.get(link.href)
+      @assets = Asset.parse(response.body)
+    end
+
+    def self.get(place_id)
+      response = Client.get_client.get("/places/#{place_id}")
       parse(response.body, :single => true)
     end
 
-    def self.search(client, search_term, location_name)
-      response = client.get('/places', :query => { :show => search_term, :in => location_name })
-      Place.parse(response.body)
+    def self.search(search_term, location_name)
+      response = Client.get_client.get('/places', :query => { :show => search_term, :in => location_name })
+      self.parse(response.body)
     end
 
     # options can be
@@ -120,9 +151,9 @@ module Qype
     #   :in_category => category_id     only show places in a specific category
     #   :order => order                 order results by: 'distance' (default), 'rating'
     #
-    def self.nearby(client, latitude, longitude, options = {})
-      response = client.get("/positions/#{latitude},#{longitude}/places", :query => options)
-      Place.parse(response.body)
+    def self.nearby(latitude, longitude, options = {})
+      response = Client.get_client.get("/positions/#{latitude},#{longitude}/places", :query => options)
+      self.parse(response.body)
     end
 
   end

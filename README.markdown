@@ -1,23 +1,26 @@
 Qype API
 --------
 
-The official Ruby library for interacting with the Qype API.
+The unofficial Ruby library for interacting with the Qype API.
 
 
 Installation
 ------------
 
-install required gems:
+Add this line to your gemfile:
+gem 'qype', :git => 'git://github.com/iwiznia/qype.git'
 
-    sudo gem install oauth
-    sudo gem install happymapper
-    sudo gem install httparty
+
+Configuration
+-------------
+
+Qype::Client.config = {:credentials => {:key => "YOURAPIKEY", :secret => "YOURAPISECRET"}, :language => "YOURLANGUAGE"}
 
 Usage
 -----
 
-    require 'rubygems'
-    require 'qype'
-    
-    qype = Qype::Client.new('your_api_key', 'your_api_secret')
-    places = qype.search_places('sushi', 'Hamburg')
+Qype::Client.get_client.get("/relative_url_to_qype_resource")
+Qype::Category.get_all
+Qype::Place.get("PLACEID")
+Qype::Place.search('sushi', 'Hamburg')
+Qype::Place.nearby(lat, lng, opts)
