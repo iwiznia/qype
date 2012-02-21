@@ -25,5 +25,13 @@ module Qype
     def get(path, options = {})
       self.class.get(path, options)
     end
+
+    def post(path, data = "")
+      self.class.post(path, :body => data)
+    end
+
+    def put(path, data = "")
+      self.class.put(path, :body => data)
+    end
   end
 end

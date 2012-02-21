@@ -5,19 +5,19 @@ Gem::Specification.new do |s|
   s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Florian Munz"]
+  s.authors = ["Ionatan Wiznia"]
   s.date = %q{2008-12-04}
-  s.description = %q{The official Ruby Library for interacting with the Qype API.}
-  s.email = %q{florian@qype.com}
+  s.description = %q{The unofficial Ruby Library for interacting with the Qype API.}
+  s.email = %q{iwiznia@hotmail.com}
   s.extra_rdoc_files = ["lib/httparty_patch.rb", "lib/qype/client.rb", "lib/qype/models.rb", "lib/qype.rb", "LICENSE", "README.markdown"]
   s.files = ["lib/httparty_patch.rb", "lib/qype/client.rb", "lib/qype/models.rb", "lib/qype.rb", "LICENSE", "Rakefile", "README.markdown", "test/fixtures/place.xml", "test/fixtures/places.xml", "test/fixtures/review.xml", "test/fixtures/reviews.xml", "test/place_mapping_test.rb", "test/review_mapping_test.rb", "test/test_helper.rb", "qype.gemspec"]
   s.has_rdoc = true
-  s.homepage = %q{http://github.com/qype/qype}
+  s.homepage = %q{http://github.com/iwiznia/qype}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Qype", "--main", "README.markdown"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{qype}
   s.rubygems_version = %q{1.3.1}
-  s.summary = %q{The official Ruby Library for interacting with the Qype API.}
+  s.summary = %q{The unofficial Ruby Library for interacting with the Qype API.}
   s.test_files = ["test/place_mapping_test.rb", "test/review_mapping_test.rb", "test/test_helper.rb"]
 
   if s.respond_to? :specification_version then
@@ -35,7 +35,6 @@ Gem::Specification.new do |s|
 
   #s.add_dependency('rubygems',  [">=0"])
   s.add_dependency('httparty',  [">=0"])
-  s.add_dependency('happymapper', [">=0"])
+  s.add_dependency('unhappymapper', [">=0.4.4"])
   s.add_dependency('oauth', [">=0"])
-
 end

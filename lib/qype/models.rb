@@ -18,10 +18,10 @@ module Qype
 
     element :title, String
     element :full_title, String
-    element :id, String
-    element :updated, DateTime
-    element :created, DateTime
-    has_many :links, Link
+    element :qype_id, String, :tag => "id"
+    element :updated, DateTime, :read_only => true
+    element :created, DateTime, :read_only => true
+    has_many :links, Link, :read_only => true
 
     attr_accessor :children
 
@@ -71,7 +71,7 @@ module Qype
 
     tag 'asset'
 
-    element :id, String
+    element :qype_id, String, :tag => "id"
     element :caption, String
     element :created, DateTime
 
@@ -96,10 +96,10 @@ module Qype
 
     tag 'place'
 
-    element :id, String
+    element :qype_id, String, :tag => "id", :read_only => true
     element :title, String
     element :phone, String
-    element :average_rating, Float
+    element :average_rating, Float, :read_only => true
     element :point, String
     element :closed, Boolean
     element :url, String
@@ -110,7 +110,7 @@ module Qype
 
     has_one :address, Address
     has_many :categories, Category
-    has_many :links, Link
+    has_many :links, Link, :read_only => true
 
     def real_id
       id.gsub!(/tag:api.qype.com,\d{4}-\d{2}-\d{2}:\/places\//,'')
