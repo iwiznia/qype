@@ -35,9 +35,12 @@ module HTTParty
   # access_token = request_token.get_access_token(:oauth_verifier=>"XXXXXXX")
   # access_token.token access_token.secret
 
-  # Use a stored acces token:
+  # Use a stored access token:
   # access_token = OAuth::AccessToken.new(consumer, Settings::Qype.access.token, Settings::Qype.access.secret)
-  #
+
+  # Create place?
+  # a = Qype::Place.new(:title => "Nuevo test", :address => Qype::Address.new(:city => "Madrid", :postcode => "28001", :street => "Principe de vergara", :housenumber => 41), :categories => [Qype::Category.new(:qype_id => 330)])
+  # a.save
 
 
 end

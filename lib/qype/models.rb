@@ -25,6 +25,12 @@ module Qype
 
     attr_accessor :children
 
+    def initialize(attrs = {})
+      attrs.each do |name, val|
+        self.send("#{name}=", val)
+      end
+    end
+
     def real_id
       id.gsub!(/tag:api.qype.com,\d{4}-\d{2}-\d{2}:\/places\/categories\//,'')
     end
@@ -89,6 +95,12 @@ module Qype
     element :housenumber, String
     element :city, String
     element :country_code, String
+
+    def initialize(attrs = {})
+      attrs.each do |name, val|
+        self.send("#{name}=", val)
+      end
+    end
   end
 
   class Place
@@ -111,6 +123,12 @@ module Qype
     has_one :address, Address
     has_many :categories, Category
     has_many :links, Link, :read_only => true
+
+    def initialize(attrs = {})
+      attrs.each do |name, val|
+        self.send("#{name}=", val)
+      end
+    end
 
     def real_id
       id.gsub!(/tag:api.qype.com,\d{4}-\d{2}-\d{2}:\/places\//,'')
@@ -156,6 +174,9 @@ module Qype
       self.parse(response.body)
     end
 
+    def save
+      Client.get_access_token.post("/v1/places", self.to_xml)
+    end
   end
 
   class Tag
